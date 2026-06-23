@@ -9,6 +9,22 @@ const DEMO = [
 ];
 const DEMO_PW = 'Passw0rd!23';
 
+const ROLES = [
+  { value: 'requester', label: 'Requester — raise material requests' },
+  { value: 'storekeeper', label: 'Stores — fulfil & deliver' },
+  { value: 'approver', label: 'EGA Approver — approve over-allocation' },
+  { value: 'admin', label: 'Administrator — full access' },
+];
+
+// Mirrors the backend password policy so users get instant feedback.
+const PW_RULES = [
+  { test: (p) => p.length >= 10, label: 'At least 10 characters' },
+  { test: (p) => /[A-Z]/.test(p), label: 'An uppercase letter' },
+  { test: (p) => /[a-z]/.test(p), label: 'A lowercase letter' },
+  { test: (p) => /[0-9]/.test(p), label: 'A number' },
+  { test: (p) => /[^A-Za-z0-9]/.test(p), label: 'A symbol' },
+];
+
 export function renderAuth(root, onAuthed) {
   clear(root);
   root.className = 'app-frame';
@@ -16,12 +32,12 @@ export function renderAuth(root, onAuthed) {
   root.appendChild(wrap);
   showLogin();
 
-  function showLogin(prefillEmail = 'requester@ega.ae') {
+  // ---------------------------------------------------------------- SIGN IN
+  function showLogin(prefillEmail = 'requester@ega.ae', banner = null) {
     clear(wrap);
     const errBox = h('div', { class: 'error-box', style: 'display:none' });
     const email = h('input', { type: 'email', value: prefillEmail, autocomplete: 'username', placeholder: 'name@ega.ae' });
-    const pw = h('input', { type: 'password', value: DEMO_PW, autocomplete: 'current-password', placeholder: '••••••••' });
-
+    const pw = h('input', { type: 'password', value: prefillEmail === 'requester@ega.ae' ? DEMO_PW : '', autocomplete: 'current-password', placeholder: '••••••••' });
     const btn = h('button', { class: 'btn', onclick: doLogin }, 'Sign in');
 
     async function doLogin() {
@@ -38,17 +54,19 @@ export function renderAuth(root, onAuthed) {
     }
 
     wrap.append(
-      h('div', { class: 'auth-logo' }, [
-        h('div', { class: 'big' }, 'EGA'),
-        h('div', { class: 'small' }, 'DISTRIBUTION · FOCUS 9'),
-      ]),
+      logo('EGA', 'DISTRIBUTION · FOCUS 9'),
       h('div', { class: 'auth-card' }, [
+        banner ? h('div', { class: 'ok-box' }, banner) : null,
         h('div', { class: 'strong', style: 'font-size:18px;margin-bottom:4px' }, 'Welcome back'),
         h('div', { class: 'muted small', style: 'margin-bottom:16px' }, 'Sign in to raise and track material distribution.'),
         errBox,
-        h('label', { class: 'field' }, [h('span', { class: 'lbl' }, 'Email'), email]),
-        h('label', { class: 'field' }, [h('span', { class: 'lbl' }, 'Password'), pw]),
+        field('Email', email),
+        field('Password', pw),
         btn,
+        h('div', { class: 'auth-switch' }, [
+          'New to EGA Distribution? ',
+          h('a', { class: 'link', onclick: () => showSignup() }, 'Create an account'),
+        ]),
         h('div', { class: 'demo-accounts' }, [
           h('div', { class: 'section-title', style: 'margin-left:0' }, 'Demo accounts (tap to fill)'),
           ...DEMO.map((d) =>
@@ -62,6 +80,77 @@ export function renderAuth(root, onAuthed) {
     );
   }
 
+  // ---------------------------------------------------------------- SIGN UP
+  function showSignup() {
+    clear(wrap);
+    const errBox = h('div', { class: 'error-box', style: 'display:none' });
+    const name = h('input', { type: 'text', autocomplete: 'name', placeholder: 'Your full name' });
+    const email = h('input', { type: 'email', autocomplete: 'email', placeholder: 'name@ega.ae' });
+    const role = h('select', {}, ROLES.map((r) => h('option', { value: r.value }, r.label)));
+    const pw = h('input', { type: 'password', autocomplete: 'new-password', placeholder: 'Create a password' });
+    const pw2 = h('input', { type: 'password', autocomplete: 'new-password', placeholder: 'Confirm password' });
+
+    // Live password-policy checklist.
+    const ruleEls = PW_RULES.map((r) => h('li', { class: 'pw-rule' }, [h('span', { class: 'dot' }, '○'), r.label]));
+    const ruleList = h('ul', { class: 'pw-rules' }, ruleEls);
+    function refreshRules() {
+      PW_RULES.forEach((r, i) => {
+        const ok = r.test(pw.value);
+        ruleEls[i].classList.toggle('ok', ok);
+        ruleEls[i].querySelector('.dot').textContent = ok ? '●' : '○';
+      });
+    }
+    pw.addEventListener('input', refreshRules);
+
+    const btn = h('button', { class: 'btn', onclick: doSignup }, 'Create account');
+
+    async function doSignup() {
+      errBox.style.display = 'none';
+      const allRulesOk = PW_RULES.every((r) => r.test(pw.value));
+      if (!name.value.trim()) return fail('Please enter your name.');
+      if (!email.value.trim()) return fail('Please enter your email.');
+      if (!allRulesOk) return fail('Password does not meet all requirements.');
+      if (pw.value !== pw2.value) return fail('Passwords do not match.');
+
+      btn.disabled = true; btn.textContent = 'Creating…';
+      try {
+        await api.register({ name: name.value.trim(), email: email.value.trim(), password: pw.value, role: role.value });
+        toast('Account created');
+        showLogin(email.value.trim(), 'Account created successfully — please sign in.');
+      } catch (e) {
+        fail(e.message);
+      } finally {
+        btn.disabled = false; btn.textContent = 'Create account';
+      }
+    }
+    function fail(msg) {
+      errBox.textContent = msg; errBox.style.display = 'block';
+      btn.disabled = false; btn.textContent = 'Create account';
+    }
+
+    wrap.append(
+      logo('EGA', 'CREATE YOUR ACCOUNT'),
+      h('div', { class: 'auth-card' }, [
+        h('div', { class: 'strong', style: 'font-size:18px;margin-bottom:4px' }, 'Sign up'),
+        h('div', { class: 'muted small', style: 'margin-bottom:16px' }, 'Create an account to request and track material distribution.'),
+        errBox,
+        field('Full name', name),
+        field('Email', email),
+        field('Account type', role),
+        field('Password', pw),
+        ruleList,
+        field('Confirm password', pw2),
+        btn,
+        h('div', { class: 'auth-switch' }, [
+          'Already have an account? ',
+          h('a', { class: 'link', onclick: () => showLogin('') }, 'Sign in'),
+        ]),
+      ])
+    );
+    refreshRules();
+  }
+
+  // ---------------------------------------------------------------- OTP / MFA
   function showOtp(userId, email, devOtp) {
     clear(wrap);
     const errBox = h('div', { class: 'error-box', style: 'display:none' });
@@ -102,7 +191,7 @@ export function renderAuth(root, onAuthed) {
     }
 
     wrap.append(
-      h('div', { class: 'auth-logo' }, [h('div', { class: 'big' }, '🔐'), h('div', { class: 'small' }, 'TWO-FACTOR AUTHENTICATION')]),
+      logo('🔐', 'TWO-FACTOR AUTHENTICATION'),
       h('div', { class: 'auth-card' }, [
         h('div', { class: 'strong', style: 'font-size:18px;margin-bottom:4px' }, 'Enter your code'),
         h('div', { class: 'muted small' }, `We sent a 6-digit one-time code for ${email}.`),
@@ -112,5 +201,13 @@ export function renderAuth(root, onAuthed) {
       ])
     );
     inputs[0].focus();
+  }
+
+  // helpers
+  function logo(big, small) {
+    return h('div', { class: 'auth-logo' }, [h('div', { class: 'big' }, big), h('div', { class: 'small' }, small)]);
+  }
+  function field(label, input) {
+    return h('label', { class: 'field' }, [h('span', { class: 'lbl' }, label), input]);
   }
 }
