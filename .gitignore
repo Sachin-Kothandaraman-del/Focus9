@@ -1,6 +1,6 @@
 node_modules/
 backend/.env
-backend/src/data/*.json
+backend/src/data/
 backend/certs/
 .vercel/
 npm-debug.log*
