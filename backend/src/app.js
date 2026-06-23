@@ -10,7 +10,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { config } from './config.js';
-import { dbReady } from './db/store.js';
+import { db, dbReady } from './db/store.js';
 import { apiLimiter } from './middleware/rateLimit.js';
 import { notFound, errorHandler } from './middleware/errorHandler.js';
 
@@ -55,7 +55,30 @@ app.use(
 
 app.use(express.json({ limit: '256kb' }));
 
-// Ensure the database is initialised + seeded before any handler runs.
+// --- Health (NOT gated by the DB, so it can diagnose DB problems) ------------
+app.get('/api/health', async (req, res) => {
+  let dbOk = false;
+  let dbError = null;
+  try {
+    await dbReady; // initialise + seed
+    await db.users.count(); // ping
+    dbOk = true;
+  } catch (e) {
+    dbError = e.message;
+  }
+  res.json({
+    status: dbOk ? 'ok' : 'degraded',
+    env: config.env,
+    onVercel: !!process.env.VERCEL,
+    dataBackend: config.db.backend,
+    hasDatabaseUrl: !!config.db.url,
+    db: { ok: dbOk, error: dbError },
+    focus9Mode: config.focus9.mode,
+    time: new Date().toISOString(),
+  });
+});
+
+// Ensure the database is initialised + seeded before any data handler runs.
 app.use(async (req, res, next) => {
   try {
     await dbReady;
@@ -63,17 +86,6 @@ app.use(async (req, res, next) => {
   } catch (e) {
     next(e);
   }
-});
-
-// --- Health -----------------------------------------------------------------
-app.get('/api/health', (req, res) => {
-  res.json({
-    status: 'ok',
-    env: config.env,
-    dataBackend: config.db.backend,
-    focus9Mode: config.focus9.mode,
-    time: new Date().toISOString(),
-  });
 });
 
 // --- API routes (rate-limited) ----------------------------------------------

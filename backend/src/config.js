@@ -7,6 +7,26 @@ import path from 'node:path';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.join(__dirname, '..', '.env') });
 
+// A Postgres URL whose password contains unencoded URL-structural characters
+// (most commonly '@') is ambiguous and breaks the driver. Detect that (the
+// authority then has more than one '@') and percent-encode the password so the
+// connection works even if the user pasted a raw password into DATABASE_URL.
+function normalizePgUrl(url) {
+  const m = (url || '').trim().match(/^(postgres(?:ql)?:\/\/)([^/?#]+)(.*)$/i);
+  if (!m) return (url || '').trim();
+  const [, scheme, authority, rest] = m;
+  const at = authority.lastIndexOf('@');
+  if (at === -1) return url.trim();
+  const userinfo = authority.slice(0, at);
+  const host = authority.slice(at + 1);
+  const colon = userinfo.indexOf(':');
+  if (colon === -1) return url.trim();
+  const user = userinfo.slice(0, colon);
+  let pass = userinfo.slice(colon + 1);
+  if (/[@/:?#[\] ]/.test(pass)) pass = encodeURIComponent(pass); // contains raw special chars
+  return `${scheme}${user}:${pass}@${host}${rest}`;
+}
+
 function required(name, fallback) {
   const v = process.env[name] ?? fallback;
   if (v === undefined) {
@@ -24,8 +44,14 @@ export const config = {
   // Defaults to postgres automatically when a DATABASE_URL is present
   // (i.e. on Vercel), otherwise the zero-setup file store for local dev.
   db: {
-    backend: process.env.DATA_BACKEND || (process.env.DATABASE_URL ? 'postgres' : 'file'),
-    url: process.env.DATABASE_URL || '',
+    // On Vercel the filesystem is read-only, so the file store can't work there:
+    // whenever a DATABASE_URL is present we force the Postgres backend, even if a
+    // stray DATA_BACKEND=file was copied into the environment.
+    backend:
+      process.env.VERCEL && process.env.DATABASE_URL
+        ? 'postgres'
+        : process.env.DATA_BACKEND || (process.env.DATABASE_URL ? 'postgres' : 'file'),
+    url: normalizePgUrl(process.env.DATABASE_URL || ''),
     // Supabase requires SSL; set DATABASE_SSL=disable for a local test Postgres.
     ssl: process.env.DATABASE_SSL === 'disable' ? false : 'require',
   },
