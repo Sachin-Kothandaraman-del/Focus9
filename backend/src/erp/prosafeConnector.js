@@ -1,8 +1,8 @@
 // PROSAFE connector.
 //
-// In the EGA flow chart the middleware sits between the EGA Server and the
-// PROSAFE Server. PROSAFE is EGA's personnel / safety-equipment system of
-// record; here it validates that the person receiving material is a valid EGA
+// In the E&E flow chart the middleware sits between the E&E Server and the
+// PROSAFE Server. PROSAFE is E&E's personnel / safety-equipment system of
+// record; here it validates that the person receiving material is a valid E&E
 // employee and exposes their allocation entitlement.
 //
 // Mock mode returns deterministic data so the "within allocated qty" decision
@@ -10,10 +10,10 @@
 import { config } from '../config.js';
 
 const mockEmployees = {
-  EGA1001: { name: 'Ahmed Al Mansoori', dept: 'Pot Line 1', active: true },
-  EGA1002: { name: 'Rashid Khan', dept: 'Casthouse', active: true },
-  EGA1003: { name: 'Mariam Saeed', dept: 'Carbon Plant', active: true },
-  EGA1004: { name: 'John Mathew', dept: 'Maintenance', active: true },
+  EE1001: { name: 'Ahmed Al Mansoori', dept: 'Pot Line 1', active: true },
+  EE1002: { name: 'Rashid Khan', dept: 'Casthouse', active: true },
+  EE1003: { name: 'Mariam Saeed', dept: 'Carbon Plant', active: true },
+  EE1004: { name: 'John Mathew', dept: 'Maintenance', active: true },
 };
 
 export const prosafe = {

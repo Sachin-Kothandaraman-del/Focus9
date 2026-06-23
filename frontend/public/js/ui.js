@@ -25,7 +25,7 @@ export function statusChip(status) {
 }
 
 export function roleLabel(role) {
-  return { requester: 'Requester', storekeeper: 'Stores', approver: 'EGA Approver', admin: 'Administrator' }[role] || role;
+  return { requester: 'Requester', storekeeper: 'Stores', approver: 'E&E Approver', admin: 'Administrator' }[role] || role;
 }
 
 export function money(n, cur = 'AED') {

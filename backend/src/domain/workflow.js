@@ -1,31 +1,31 @@
 // ---------------------------------------------------------------------------
-// EGA End-to-End Distribution workflow (from the flow-chart PPTX).
+// E&E End-to-End Distribution workflow (from the flow-chart PPTX).
 //
 //   Material Request
 //        -> Receipt Acknowledgement
 //        -> (Material Return branch, optional)
 //        -> SO Creation                (Focus 9)
 //        -> Delivery Note              ("Delivery to the person")
-//        -> Within Allocated Qtys?  --No-->  EGA Approval (Yes/No)
+//        -> Within Allocated Qtys?  --No-->  E&E Approval (Yes/No)
 //        -> Delivery Note Consolidation
-//        -> Invoice to EGA             (Focus 9)
+//        -> Invoice to E&E             (Focus 9)
 //
-// The "Within Allocated Qtys" gate decides whether EGA Approval is required:
+// The "Within Allocated Qtys" gate decides whether E&E Approval is required:
 // requests within a recipient's allocation flow straight through; requests that
-// exceed allocation are routed to an EGA approver.
+// exceed allocation are routed to an E&E approver.
 // ---------------------------------------------------------------------------
 
 export const STATUS = {
   DRAFT: 'DRAFT',
   SUBMITTED: 'SUBMITTED', // Material Request raised
   ACKNOWLEDGED: 'ACKNOWLEDGED', // Receipt Acknowledgement
-  PENDING_APPROVAL: 'PENDING_APPROVAL', // exceeded allocation -> EGA Approval
+  PENDING_APPROVAL: 'PENDING_APPROVAL', // exceeded allocation -> E&E Approval
   APPROVED: 'APPROVED',
   REJECTED: 'REJECTED',
   SO_CREATED: 'SO_CREATED', // Sales Order created in Focus 9
   DELIVERED: 'DELIVERED', // Delivery Note issued to the person
   CONSOLIDATED: 'CONSOLIDATED', // Delivery Note Consolidation
-  INVOICED: 'INVOICED', // Invoice to EGA
+  INVOICED: 'INVOICED', // Invoice to E&E
   CANCELLED: 'CANCELLED',
 };
 
@@ -33,13 +33,13 @@ export const STATUS = {
 export const NEXT_STEP = {
   DRAFT: 'Submit the material request',
   SUBMITTED: 'Awaiting receipt acknowledgement by stores',
-  ACKNOWLEDGED: 'Allocation check / EGA approval',
-  PENDING_APPROVAL: 'Awaiting EGA approval (exceeds allocation)',
+  ACKNOWLEDGED: 'Allocation check / E&E approval',
+  PENDING_APPROVAL: 'Awaiting E&E approval (exceeds allocation)',
   APPROVED: 'Create Sales Order in Focus 9',
-  REJECTED: 'Request rejected by EGA approver',
+  REJECTED: 'Request rejected by E&E approver',
   SO_CREATED: 'Issue Delivery Note (delivery to the person)',
   DELIVERED: 'Consolidate delivery notes',
-  CONSOLIDATED: 'Raise invoice to EGA',
+  CONSOLIDATED: 'Raise invoice to E&E',
   INVOICED: 'Completed',
   CANCELLED: 'Cancelled',
 };

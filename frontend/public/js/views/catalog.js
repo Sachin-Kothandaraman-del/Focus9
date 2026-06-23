@@ -18,7 +18,7 @@ export async function renderCatalog(screen, ctx) {
 
   screen.appendChild(h('div', { style: 'margin:2px 2px 6px' }, [
     h('div', { class: 'strong', style: 'font-size:19px' }, 'New material request'),
-    h('div', { class: 'muted small' }, 'Select PPE / safety items. Quantities above the per-person allocation will require EGA approval.'),
+    h('div', { class: 'muted small' }, 'Select PPE / safety items. Quantities above the per-person allocation will require E&E approval.'),
   ]));
 
   const deptInput = h('select', {}, ['Pot Line 1', 'Pot Line 2', 'Casthouse', 'Carbon Plant', 'Maintenance', 'Other'].map((d) => h('option', {}, d)));
@@ -75,7 +75,7 @@ export async function renderCatalog(screen, ctx) {
       bar.disabled = false;
       bar.textContent = `Create request · ${units} unit${units > 1 ? 's' : ''} · ${money(total)}`;
       allocNote.innerHTML = over
-        ? '⚠️ Some quantities exceed the per-person allocation — this request will route to <b>EGA approval</b>.'
+        ? '⚠️ Some quantities exceed the per-person allocation — this request will route to <b>E&E approval</b>.'
         : '✓ All quantities are within allocation — this request will be <b>auto-approved</b>.';
     }
   }

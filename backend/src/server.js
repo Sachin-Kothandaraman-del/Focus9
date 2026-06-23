@@ -29,7 +29,7 @@ async function start() {
 
 function banner(scheme) {
   console.log('────────────────────────────────────────────────────────────');
-  console.log('  EGA × Focus 9 — End-to-End Distribution App');
+  console.log('  E&E × Focus 9 — End-to-End Distribution App');
   console.log(`  Middleware + Mobile PWA running at ${scheme}://localhost:${config.port}`);
   console.log(`  Data backend: ${config.db.backend}   |   Focus 9 mode: ${config.focus9.mode}   |   env: ${config.env}`);
   console.log('  Open the URL above on a phone-sized browser window.');

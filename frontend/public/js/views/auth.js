@@ -2,17 +2,17 @@ import { h, clear, toast } from '../ui.js';
 import { api, session } from '../api.js';
 
 const DEMO = [
-  { email: 'requester@ega.ae', role: 'Requester' },
-  { email: 'stores@ega.ae', role: 'Stores' },
-  { email: 'approver@ega.ae', role: 'EGA Approver' },
-  { email: 'admin@ega.ae', role: 'Administrator' },
+  { email: 'requester@eande.ae', role: 'Requester' },
+  { email: 'stores@eande.ae', role: 'Stores' },
+  { email: 'approver@eande.ae', role: 'E&E Approver' },
+  { email: 'admin@eande.ae', role: 'Administrator' },
 ];
 const DEMO_PW = 'Passw0rd!23';
 
 const ROLES = [
   { value: 'requester', label: 'Requester — raise material requests' },
   { value: 'storekeeper', label: 'Stores — fulfil & deliver' },
-  { value: 'approver', label: 'EGA Approver — approve over-allocation' },
+  { value: 'approver', label: 'E&E Approver — approve over-allocation' },
   { value: 'admin', label: 'Administrator — full access' },
 ];
 
@@ -33,11 +33,11 @@ export function renderAuth(root, onAuthed) {
   showLogin();
 
   // ---------------------------------------------------------------- SIGN IN
-  function showLogin(prefillEmail = 'requester@ega.ae', banner = null) {
+  function showLogin(prefillEmail = 'requester@eande.ae', banner = null) {
     clear(wrap);
     const errBox = h('div', { class: 'error-box', style: 'display:none' });
-    const email = h('input', { type: 'email', value: prefillEmail, autocomplete: 'username', placeholder: 'name@ega.ae' });
-    const pw = h('input', { type: 'password', value: prefillEmail === 'requester@ega.ae' ? DEMO_PW : '', autocomplete: 'current-password', placeholder: '••••••••' });
+    const email = h('input', { type: 'email', value: prefillEmail, autocomplete: 'username', placeholder: 'name@eande.ae' });
+    const pw = h('input', { type: 'password', value: prefillEmail === 'requester@eande.ae' ? DEMO_PW : '', autocomplete: 'current-password', placeholder: '••••••••' });
     const btn = h('button', { class: 'btn', onclick: doLogin }, 'Sign in');
 
     async function doLogin() {
@@ -54,7 +54,7 @@ export function renderAuth(root, onAuthed) {
     }
 
     wrap.append(
-      logo('EGA', 'DISTRIBUTION · FOCUS 9'),
+      logo('E&E', 'DISTRIBUTION · FOCUS 9'),
       h('div', { class: 'auth-card' }, [
         banner ? h('div', { class: 'ok-box' }, banner) : null,
         h('div', { class: 'strong', style: 'font-size:18px;margin-bottom:4px' }, 'Welcome back'),
@@ -64,7 +64,7 @@ export function renderAuth(root, onAuthed) {
         field('Password', pw),
         btn,
         h('div', { class: 'auth-switch' }, [
-          'New to EGA Distribution? ',
+          'New to E&E Distribution? ',
           h('a', { class: 'link', onclick: () => showSignup() }, 'Create an account'),
         ]),
         h('div', { class: 'demo-accounts' }, [
@@ -85,7 +85,7 @@ export function renderAuth(root, onAuthed) {
     clear(wrap);
     const errBox = h('div', { class: 'error-box', style: 'display:none' });
     const name = h('input', { type: 'text', autocomplete: 'name', placeholder: 'Your full name' });
-    const email = h('input', { type: 'email', autocomplete: 'email', placeholder: 'name@ega.ae' });
+    const email = h('input', { type: 'email', autocomplete: 'email', placeholder: 'name@eande.ae' });
     const role = h('select', {}, ROLES.map((r) => h('option', { value: r.value }, r.label)));
     const pw = h('input', { type: 'password', autocomplete: 'new-password', placeholder: 'Create a password' });
     const pw2 = h('input', { type: 'password', autocomplete: 'new-password', placeholder: 'Confirm password' });
@@ -129,7 +129,7 @@ export function renderAuth(root, onAuthed) {
     }
 
     wrap.append(
-      logo('EGA', 'CREATE YOUR ACCOUNT'),
+      logo('E&E', 'CREATE YOUR ACCOUNT'),
       h('div', { class: 'auth-card' }, [
         h('div', { class: 'strong', style: 'font-size:18px;margin-bottom:4px' }, 'Sign up'),
         h('div', { class: 'muted small', style: 'margin-bottom:16px' }, 'Create an account to request and track material distribution.'),

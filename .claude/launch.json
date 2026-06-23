@@ -2,7 +2,7 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "ega-app",
+      "name": "ee-app",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["--prefix", "backend", "start"],
       "port": 4000

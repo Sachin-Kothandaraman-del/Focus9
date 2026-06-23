@@ -1,4 +1,4 @@
-// Business logic for the EGA distribution workflow. Routes stay thin; all ERP
+// Business logic for the E&E distribution workflow. Routes stay thin; all ERP
 // interaction + state transitions live here. All persistence is async so the
 // same code runs over the local file store or Supabase Postgres.
 import crypto from 'node:crypto';
@@ -43,29 +43,29 @@ export async function acknowledge(request, actor) {
     return ensureSalesOrder(request, actor);
   }
 
-  pushHistory(request, STATUS.PENDING_APPROVAL, actor, 'Exceeds allocation — routed to EGA approval');
+  pushHistory(request, STATUS.PENDING_APPROVAL, actor, 'Exceeds allocation — routed to E&E approval');
   const saved = await db.requests.update(request.id, request);
   await audit(actor, 'request.acknowledge.needsapproval', request.id, { exceeded: allocation.exceeded });
   return saved;
 }
 
-/** EGA Approval = Yes. */
+/** E&E Approval = Yes. */
 export async function approve(request, actor, note) {
   if (!canTransition(request.status, STATUS.APPROVED)) {
     throw new ApiError(409, 'invalid_state', `Cannot approve a request in ${request.status}.`);
   }
-  pushHistory(request, STATUS.APPROVED, actor, note || 'Approved by EGA');
+  pushHistory(request, STATUS.APPROVED, actor, note || 'Approved by E&E');
   await db.requests.update(request.id, request);
   await audit(actor, 'request.approve', request.id, { note });
   return ensureSalesOrder(request, actor);
 }
 
-/** EGA Approval = No. */
+/** E&E Approval = No. */
 export async function reject(request, actor, reason) {
   if (!canTransition(request.status, STATUS.REJECTED)) {
     throw new ApiError(409, 'invalid_state', `Cannot reject a request in ${request.status}.`);
   }
-  pushHistory(request, STATUS.REJECTED, actor, reason || 'Rejected by EGA');
+  pushHistory(request, STATUS.REJECTED, actor, reason || 'Rejected by E&E');
   const saved = await db.requests.update(request.id, request);
   await audit(actor, 'request.reject', request.id, { reason });
   return saved;
@@ -76,7 +76,7 @@ export async function ensureSalesOrder(request, actor) {
   if (request.salesOrderNo) return request;
   const order = {
     requestNo: request.requestNo,
-    customerCode: 'EGA',
+    customerCode: 'E&E',
     lines: request.lines.map((l) => ({
       materialId: l.materialId,
       materialCode: l.materialCode,
@@ -162,14 +162,14 @@ export async function consolidate(request, actor) {
   return saved;
 }
 
-/** Invoice to EGA (Focus 9). */
+/** Invoice to E&E (Focus 9). */
 export async function invoice(request, actor) {
   if (!canTransition(request.status, STATUS.INVOICED)) {
     throw new ApiError(409, 'invalid_state', `Cannot invoice a request in ${request.status}.`);
   }
   const payload = {
     salesOrderNo: request.salesOrderNo,
-    customer: 'EGA',
+    customer: 'E&E',
     lines: request.lines.map((l) => ({ materialCode: l.materialCode, qty: l.qty, unitPrice: l.unitPrice })),
   };
   const inv = await runWithQueue('postInvoice', payload, () => focus9.postInvoice(payload));
@@ -187,7 +187,7 @@ export async function invoice(request, actor) {
 
   request.invoiceNo = inv.invoiceNo;
   request.invoiceAmount = inv.totalAmount;
-  pushHistory(request, STATUS.INVOICED, actor, `Invoice ${inv.invoiceNo} (${inv.currency} ${inv.totalAmount}) posted to EGA`);
+  pushHistory(request, STATUS.INVOICED, actor, `Invoice ${inv.invoiceNo} (${inv.currency} ${inv.totalAmount}) posted to E&E`);
   await db.requests.update(request.id, request);
   await audit(actor, 'request.invoice', request.id, { invoiceNo: inv.invoiceNo, amount: inv.totalAmount });
   return { request, invoice: record };

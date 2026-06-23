@@ -25,7 +25,7 @@ export async function renderHome(screen, ctx) {
   screen.appendChild(
     h('div', { style: 'margin:2px 2px 14px' }, [
       h('div', { class: 'strong', style: 'font-size:20px' }, `Hi, ${ctx.user.name.split(' ')[0]} 👋`),
-      h('div', { class: 'muted small' }, `${roleLabel(ctx.user.role)} · EGA × Focus 9 distribution`),
+      h('div', { class: 'muted small' }, `${roleLabel(ctx.user.role)} · E&E × Focus 9 distribution`),
     ])
   );
 
@@ -35,7 +35,7 @@ export async function renderHome(screen, ctx) {
     { n: active, l: 'In progress' },
   ];
   if (ctx.user.role === 'approver' || ctx.user.role === 'admin') tiles.push({ n: pendingApproval, l: 'Awaiting approval' });
-  if (ctx.user.role === 'storekeeper' || ctx.user.role === 'admin') tiles.push({ n: money(totalInvoiced), l: 'Invoiced to EGA', wide: true });
+  if (ctx.user.role === 'storekeeper' || ctx.user.role === 'admin') tiles.push({ n: money(totalInvoiced), l: 'Invoiced to E&E', wide: true });
   if (ctx.user.role === 'requester') tiles.push({ n: invoiced.length, l: 'Completed' });
 
   screen.appendChild(h('div', { class: 'tiles' }, tiles.map((t) => h('div', { class: 'tile' }, [h('div', { class: 'n' }, String(t.n)), h('div', { class: 'l' }, t.l)]))));

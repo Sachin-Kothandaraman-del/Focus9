@@ -1,6 +1,6 @@
-# EGA × Focus 9 — End-to-End Distribution App
+# E&E × Focus 9 — End-to-End Distribution App
 
-A complete, runnable B2C-style mobile application for **EGA's end-to-end material
+A complete, runnable B2C-style mobile application for **E&E's end-to-end material
 distribution**, integrated (via middleware) with the **Focus 9 (Focus Softnet)
 cloud ERP**. This implements all four planning documents that drove it:
 
@@ -9,7 +9,7 @@ cloud ERP**. This implements all four planning documents that drove it:
 | **Mobile App System Requirement** (3-layer architecture, offline-first, order → Sales Order) | `frontend/` (presentation) · `backend/` (middleware) · `backend/src/erp/focus9Connector.js` (ERP layer) |
 | **Mobile App Security** (JWT, MFA/OTP, TLS, no hardcoded secrets, RBAC, audit, rate limiting) | `backend/src/security/*`, `backend/src/middleware/*`, `.env` |
 | **Licenses** (consumers use one API integration user, not per-user ERP seats) | `FOCUS9_INTEGRATION_USER` in `.env`, used by the connector for every ERP call |
-| **EGA End-to-End Distribution Flow Chart** | `backend/src/domain/workflow.js` + `distributionService.js` (the state machine) |
+| **E&E End-to-End Distribution Flow Chart** | `backend/src/domain/workflow.js` + `distributionService.js` (the state machine) |
 
 ---
 
@@ -23,7 +23,7 @@ cloud ERP**. This implements all four planning documents that drove it:
                │  HTTPS + JWT Bearer
 ┌──────────────▼──────────────┐
 │  MIDDLEWARE (business logic)│  backend/  — Node.js + Express
-│  auth/MFA, validation,      │  validates & transforms data, enforces the EGA
+│  auth/MFA, validation,      │  validates & transforms data, enforces the E&E
 │  workflow, queue + retry    │  workflow, buffers/retries ERP calls
 └──────────────┬──────────────┘
                │  REST + API key (integration user)
@@ -42,15 +42,15 @@ cloud ERP**. This implements all four planning documents that drove it:
 
 ---
 
-## 2. The EGA distribution workflow (from the flow chart)
+## 2. The E&E distribution workflow (from the flow chart)
 
 ```
 Material Request → Receipt Acknowledgement → [Within Allocated Qty?]
         ├─ within allocation ──────────────► auto-approved
-        └─ exceeds allocation ─► EGA Approval ─┬─ Yes ─► approved
+        └─ exceeds allocation ─► E&E Approval ─┬─ Yes ─► approved
                                                └─ No  ─► rejected
 → SO Creation (Focus 9) → Delivery Note ("delivery to the person", PROSAFE-validated)
-→ Delivery Note Consolidation → Invoice to EGA (Focus 9)
+→ Delivery Note Consolidation → Invoice to E&E (Focus 9)
                           (Material Return is a side branch after delivery)
 ```
 
@@ -82,17 +82,17 @@ npm run test:flow      # 20 checks across auth, both allocation paths, ERP, RBAC
 
 | Email | Role | Can do |
 |---|---|---|
-| `requester@ega.ae` | Requester | Raise/submit requests, view own, initiate returns |
-| `stores@ega.ae` | Stores | Acknowledge, deliver (PROSAFE), consolidate, invoice |
-| `approver@ega.ae` | EGA Approver | Approve/reject over-allocation requests |
-| `admin@ega.ae` | Administrator | Everything + ERP queue + audit trail |
+| `requester@eande.ae` | Requester | Raise/submit requests, view own, initiate returns |
+| `stores@eande.ae` | Stores | Acknowledge, deliver (PROSAFE), consolidate, invoice |
+| `approver@eande.ae` | E&E Approver | Approve/reject over-allocation requests |
+| `admin@eande.ae` | Administrator | Everything + ERP queue + audit trail |
 
 Login is **two-step (MFA)**: password → 6-digit OTP. In dev the OTP is shown on
 the OTP screen (it would be SMS/email in production — set `OTP_DELIVERY`).
 
 > **Try the two paths:** as Requester, order 1 Helmet (within the allocation of
 > 2) → after Stores acknowledges it is **auto-approved**. Order 5 Helmets
-> (exceeds allocation) → it routes to the **EGA Approver**.
+> (exceeds allocation) → it routes to the **E&E Approver**.
 
 ---
 
@@ -139,7 +139,7 @@ All ERP calls go through `erp/queue.js`, which records a durable queue entry and
 and retry failed requests, preventing data loss if the ERP is temporarily slow."
 
 `PROSAFE` (`erp/prosafeConnector.js`) validates that the person receiving
-material is a valid/active EGA employee before a Delivery Note is issued.
+material is a valid/active E&E employee before a Delivery Note is issued.
 
 ---
 
@@ -194,7 +194,7 @@ file store; the cloud uses Supabase Postgres. The data backend auto-switches to
 ```bash
 git init
 git add -A                      # commits the whole project (.gitignore excludes secrets)
-git commit -m "EGA x Focus 9 distribution app"
+git commit -m "E&E x Focus 9 distribution app"
 git branch -M main
 git remote add origin https://github.com/<you>/Focus9.git
 git push -u origin main

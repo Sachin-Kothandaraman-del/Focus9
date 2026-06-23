@@ -13,7 +13,7 @@ export async function renderApprovals(screen, ctx) {
   clear(screen);
   const pending = requests.filter((r) => r.status === 'PENDING_APPROVAL');
 
-  screen.appendChild(h('div', { class: 'strong', style: 'font-size:19px;margin:2px 2px 4px' }, 'EGA approvals'));
+  screen.appendChild(h('div', { class: 'strong', style: 'font-size:19px;margin:2px 2px 4px' }, 'E&E approvals'));
   screen.appendChild(h('div', { class: 'muted small', style: 'margin:0 2px 14px' }, 'Requests that exceed the per-person allocation.'));
 
   if (!pending.length) {

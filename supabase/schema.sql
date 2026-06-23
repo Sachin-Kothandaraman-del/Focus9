@@ -1,5 +1,5 @@
 -- ===========================================================================
--- EGA × Focus 9 — Supabase schema
+-- E&E × Focus 9 — Supabase schema
 -- ===========================================================================
 -- Running this is OPTIONAL: the app calls `create table if not exists` on first
 -- boot and seeds demo users + materials automatically. Run it in the Supabase

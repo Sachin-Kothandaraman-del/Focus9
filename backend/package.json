@@ -1,7 +1,7 @@
 {
-  "name": "ega-focus9-distribution-backend",
+  "name": "ee-focus9-distribution-backend",
   "version": "1.0.0",
-  "description": "Middleware/backend for the EGA end-to-end distribution mobile app, integrating with Focus 9 ERP. Implements the B2C 3-layer architecture, security best practices, and the EGA distribution workflow.",
+  "description": "Middleware/backend for the E&E end-to-end distribution mobile app, integrating with Focus 9 ERP. Implements the B2C 3-layer architecture, security best practices, and the E&E distribution workflow.",
   "type": "module",
   "main": "src/server.js",
   "scripts": {
@@ -13,7 +13,7 @@
   "keywords": [
     "focus9",
     "erp",
-    "ega",
+    "ee",
     "distribution",
     "middleware",
     "b2c"

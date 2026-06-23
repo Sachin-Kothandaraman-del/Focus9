@@ -75,7 +75,7 @@ router.post(
     const request = {
       id: crypto.randomUUID(),
       requestNo: await svc.nextRequestNo(),
-      department: req.body.department || 'EGA',
+      department: req.body.department || 'E&E',
       notes: req.body.notes || '',
       lines,
       status: STATUS.DRAFT,
@@ -115,7 +115,7 @@ router.post('/:id/acknowledge', authenticate, authorize('storekeeper', 'admin'),
   res.json({ request: await svc.acknowledge(req.materialRequest, req.user) });
 });
 
-// --- EGA Approval = Yes ------------------------------------------------------
+// --- E&E Approval = Yes ------------------------------------------------------
 router.post(
   '/:id/approve',
   authenticate,
@@ -127,7 +127,7 @@ router.post(
   }
 );
 
-// --- EGA Approval = No -------------------------------------------------------
+// --- E&E Approval = No -------------------------------------------------------
 router.post(
   '/:id/reject',
   authenticate,
@@ -171,7 +171,7 @@ router.post('/:id/consolidate', authenticate, authorize('storekeeper', 'admin'),
   res.json({ request: await svc.consolidate(req.materialRequest, req.user) });
 });
 
-// --- Invoice to EGA ----------------------------------------------------------
+// --- Invoice to E&E ----------------------------------------------------------
 router.post('/:id/invoice', authenticate, authorize('storekeeper', 'admin'), loadRequest, async (req, res) => {
   res.json(await svc.invoice(req.materialRequest, req.user));
 });

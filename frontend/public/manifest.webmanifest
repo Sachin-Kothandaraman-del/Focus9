@@ -1,7 +1,7 @@
 {
-  "name": "EGA Distribution · Focus 9",
-  "short_name": "EGA Dist",
-  "description": "EGA end-to-end material distribution app integrated with Focus 9 ERP.",
+  "name": "E&E Distribution · Focus 9",
+  "short_name": "E&E Dist",
+  "description": "E&E end-to-end material distribution app integrated with Focus 9 ERP.",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",

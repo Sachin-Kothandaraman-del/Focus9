@@ -1,8 +1,8 @@
-// API client for the EGA × Focus 9 mobile app.
+// API client for the E&E × Focus 9 mobile app.
 // Security doc: tokens are kept in memory + sessionStorage (not localStorage)
 // and sent as Bearer tokens over the (HTTPS-capable) API. No secrets here.
-const TOKEN_KEY = 'ega.tokens';
-const USER_KEY = 'ega.user';
+const TOKEN_KEY = 'ee.tokens';
+const USER_KEY = 'ee.user';
 
 export const session = {
   get tokens() {

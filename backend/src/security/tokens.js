@@ -8,21 +8,21 @@ export function issueAccessToken(user) {
   return jwt.sign(
     { sub: user.id, role: user.role, name: user.name, email: user.email },
     config.jwt.accessSecret,
-    { expiresIn: config.jwt.accessTtl, issuer: 'ega-focus9-mw' }
+    { expiresIn: config.jwt.accessTtl, issuer: 'ee-focus9-mw' }
   );
 }
 
 export function issueRefreshToken(user, tokenId) {
   return jwt.sign({ sub: user.id, jti: tokenId }, config.jwt.refreshSecret, {
     expiresIn: config.jwt.refreshTtl,
-    issuer: 'ega-focus9-mw',
+    issuer: 'ee-focus9-mw',
   });
 }
 
 export function verifyAccessToken(token) {
-  return jwt.verify(token, config.jwt.accessSecret, { issuer: 'ega-focus9-mw' });
+  return jwt.verify(token, config.jwt.accessSecret, { issuer: 'ee-focus9-mw' });
 }
 
 export function verifyRefreshToken(token) {
-  return jwt.verify(token, config.jwt.refreshSecret, { issuer: 'ega-focus9-mw' });
+  return jwt.verify(token, config.jwt.refreshSecret, { issuer: 'ee-focus9-mw' });
 }

@@ -73,7 +73,7 @@ export const config = {
     baseUrl: process.env.FOCUS9_BASE_URL || '',
     integrationUser: process.env.FOCUS9_INTEGRATION_USER || 'integration-api-user',
     apiKey: process.env.FOCUS9_API_KEY || '',
-    companyCode: process.env.FOCUS9_COMPANY_CODE || 'EGA01',
+    companyCode: process.env.FOCUS9_COMPANY_CODE || 'EE01',
   },
 
   prosafe: {
@@ -91,6 +91,11 @@ export const config = {
 
   https: {
     enabled: process.env.ENABLE_HTTPS === '1',
+  },
+
+  // Set RATE_LIMIT_DISABLED=1 to turn off auth/API throttling (local dev / demos).
+  rateLimit: {
+    disabled: process.env.RATE_LIMIT_DISABLED === '1',
   },
 
   isDev() {

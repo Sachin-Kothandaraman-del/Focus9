@@ -52,8 +52,8 @@ export async function renderAdmin(screen, ctx) {
     ]));
   }
 
-  screen.appendChild(h('div', { class: 'card', style: 'background:var(--ega-light);border-color:#bfe3d7' }, [
-    h('div', { class: 'section-title', style: 'margin:0 0 6px;color:var(--ega-dark)' }, '🔒 Security posture'),
+  screen.appendChild(h('div', { class: 'card', style: 'background:var(--ee-light);border-color:#bfe3d7' }, [
+    h('div', { class: 'section-title', style: 'margin:0 0 6px;color:var(--ee-dark)' }, '🔒 Security posture'),
     ...['JWT access + refresh tokens', 'MFA via one-time passcode', 'bcrypt password hashing (cost 12)', 'Role-based access control', 'Rate limiting on auth + API', 'Helmet security headers + CSP', 'Input validation on every route', 'Full audit trail', 'Secrets in env only (no hardcoding)']
       .map((s) => h('div', { class: 'small', style: 'padding:3px 0' }, '✓ ' + s)),
   ]));

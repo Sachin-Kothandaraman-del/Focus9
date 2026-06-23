@@ -7,10 +7,10 @@ import { db } from './store.js';
 const DEMO_PASSWORD = 'Passw0rd!23';
 
 const DEMO_USERS = [
-  { name: 'Req Requester', email: 'requester@ega.ae', role: 'requester', employeeId: 'EGA1001' },
-  { name: 'Stan Stores', email: 'stores@ega.ae', role: 'storekeeper', employeeId: 'EGA2001' },
-  { name: 'Aisha Approver', email: 'approver@ega.ae', role: 'approver', employeeId: 'EGA3001' },
-  { name: 'Adi Admin', email: 'admin@ega.ae', role: 'admin', employeeId: 'EGA9001' },
+  { name: 'Req Requester', email: 'requester@eande.ae', role: 'requester', employeeId: 'EE1001' },
+  { name: 'Stan Stores', email: 'stores@eande.ae', role: 'storekeeper', employeeId: 'EE2001' },
+  { name: 'Aisha Approver', email: 'approver@eande.ae', role: 'approver', employeeId: 'EE3001' },
+  { name: 'Adi Admin', email: 'admin@eande.ae', role: 'admin', employeeId: 'EE9001' },
 ];
 
 const MATERIALS = [

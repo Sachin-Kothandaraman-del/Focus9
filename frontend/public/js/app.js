@@ -43,7 +43,7 @@ function shell(user) {
   root.className = 'app-frame';
 
   const header = h('header', { class: 'app-header' }, [
-    h('div', {}, [h('div', { class: 'title' }, 'EGA Distribution'), h('div', { class: 'sub' }, `${roleLabel(user.role)} · Focus 9`)]),
+    h('div', {}, [h('div', { class: 'title' }, 'E&E Distribution'), h('div', { class: 'sub' }, `${roleLabel(user.role)} · Focus 9`)]),
     h('div', { class: 'spacer' }),
     h('span', { class: 'offline-pill' }, 'OFFLINE'),
     h('div', { class: 'avatar', title: 'Account', onclick: () => openAccountSheet(user) }, initials(user.name)),

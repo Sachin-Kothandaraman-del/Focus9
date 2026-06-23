@@ -60,7 +60,7 @@ export async function renderRequestDetail(screen, ctx, id) {
   screen.appendChild(h('div', { class: 'card' }, [
     h('div', { class: 'row between' }, [h('div', { class: 'mono strong', style: 'font-size:16px' }, r.requestNo), statusChip(r.status)]),
     h('div', { class: 'small muted', style: 'margin-top:6px' }, `${r.department} · raised by ${r.createdBy.name} · ${dateTime(r.createdAt)}`),
-    r.nextStep ? h('div', { class: 'small', style: 'margin-top:8px;color:var(--ega-dark)' }, `Next: ${r.nextStep}`) : null,
+    r.nextStep ? h('div', { class: 'small', style: 'margin-top:8px;color:var(--ee-dark)' }, `Next: ${r.nextStep}`) : null,
   ]));
 
   // Focus 9 references
@@ -139,11 +139,11 @@ function buildActions(r, ctx, refresh) {
     out.push(h('button', { class: 'btn', onclick: () => act(() => api.acknowledge(r.id), 'Acknowledged') }, '📥 Acknowledge receipt'));
   }
   if (r.status === 'PENDING_APPROVAL' && (role === 'approver' || role === 'admin')) {
-    out.push(h('button', { class: 'btn', onclick: () => act(() => api.approve(r.id, 'Approved via app'), 'Approved') }, '✓ Approve (EGA)'));
+    out.push(h('button', { class: 'btn', onclick: () => act(() => api.approve(r.id, 'Approved via app'), 'Approved') }, '✓ Approve (E&E)'));
     out.push(h('button', { class: 'btn danger', style: 'margin-top:8px', onclick: () => act(() => api.reject(r.id, 'Rejected via app'), 'Rejected') }, '✕ Reject'));
   }
   if (r.status === 'SO_CREATED' && (role === 'storekeeper' || role === 'admin')) {
-    const sel = h('select', {}, ['EGA1001', 'EGA1002', 'EGA1003', 'EGA1004'].map((e) => h('option', { value: e }, e)));
+    const sel = h('select', {}, ['EE1001', 'EE1002', 'EE1003', 'EE1004'].map((e) => h('option', { value: e }, e)));
     out.push(h('label', { class: 'field' }, [h('span', { class: 'lbl' }, 'Recipient (PROSAFE employee)'), sel]));
     out.push(h('button', { class: 'btn', onclick: () => act(() => api.deliver(r.id, sel.value), 'Delivery note issued') }, '🚚 Issue delivery note'));
   }
@@ -151,7 +151,7 @@ function buildActions(r, ctx, refresh) {
     out.push(h('button', { class: 'btn', onclick: () => act(() => api.consolidate(r.id), 'Consolidated') }, '🧾 Consolidate delivery notes'));
   }
   if (r.status === 'CONSOLIDATED' && (role === 'storekeeper' || role === 'admin')) {
-    out.push(h('button', { class: 'btn', onclick: () => act(() => api.invoice(r.id), 'Invoice posted') }, '💵 Raise invoice to EGA'));
+    out.push(h('button', { class: 'btn', onclick: () => act(() => api.invoice(r.id), 'Invoice posted') }, '💵 Raise invoice to E&E'));
   }
   if (['DELIVERED', 'CONSOLIDATED', 'INVOICED'].includes(r.status) && (role === 'storekeeper' || role === 'requester' || role === 'admin')) {
     out.push(h('button', { class: 'btn outline', style: 'margin-top:8px', onclick: () => act(() => api.returnItems(r.id, r.lines.map((l) => ({ materialId: l.materialId, qty: 1 })), 'Returned via app'), 'Return posted') }, '↩️ Return 1 of each item'));

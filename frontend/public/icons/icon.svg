@@ -7,7 +7,7 @@
   </defs>
   <rect width="192" height="192" rx="42" fill="url(#g)"/>
   <text x="96" y="104" font-family="Segoe UI, Arial, sans-serif" font-size="62" font-weight="700"
-        fill="#ffffff" text-anchor="middle">EGA</text>
+        fill="#ffffff" text-anchor="middle">E&amp;E</text>
   <text x="96" y="142" font-family="Segoe UI, Arial, sans-serif" font-size="20" font-weight="500"
         fill="#bfe9dc" text-anchor="middle" letter-spacing="2">FOCUS 9</text>
 </svg>

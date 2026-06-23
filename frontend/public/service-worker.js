@@ -6,8 +6,8 @@
 //  - App shell (HTML/CSS/JS/icons): cache-first so the app loads offline.
 //  - API GETs: network-first, falling back to the last cached response.
 //  - API writes (POST/etc): never cached; surfaced to the user as offline.
-const SHELL = 'ega-shell-v3';
-const DATA = 'ega-data-v3';
+const SHELL = 'ee-shell-v4';
+const DATA = 'ee-data-v4';
 
 const SHELL_ASSETS = [
   '/',

@@ -1,4 +1,4 @@
-// End-to-end smoke test of the full EGA distribution flow over HTTP.
+// End-to-end smoke test of the full E&E distribution flow over HTTP.
 // Run the server first (npm start), then: npm run test:flow
 const BASE = process.env.BASE_URL || 'http://localhost:4000';
 
@@ -45,21 +45,21 @@ async function login(email, password = 'Passw0rd!23') {
 }
 
 async function main() {
-  console.log(`\nEGA × Focus 9 — end-to-end flow test against ${BASE}\n`);
+  console.log(`\nE&E × Focus 9 — end-to-end flow test against ${BASE}\n`);
 
   const health = await api('/api/health');
   check('health endpoint up', health.status === 200 && health.json.status === 'ok');
 
   // --- Auth / MFA ----------------------------------------------------------
-  const requester = await login('requester@ega.ae');
-  const stores = await login('stores@ega.ae');
-  const approver = await login('approver@ega.ae');
-  const admin = await login('admin@ega.ae');
+  const requester = await login('requester@eande.ae');
+  const stores = await login('stores@eande.ae');
+  const approver = await login('approver@eande.ae');
+  const admin = await login('admin@eande.ae');
   check('MFA login works for all roles', !!(requester.accessToken && stores.accessToken && approver.accessToken && admin.accessToken));
 
   check('weak password rejected on register', (await api('/api/auth/register', {
     method: 'POST',
-    body: { name: 'Weak', email: `weak${Date.now()}@ega.ae`, password: 'weak' },
+    body: { name: 'Weak', email: `weak${Date.now()}@eande.ae`, password: 'weak' },
   })).status === 422);
 
   // --- Materials -----------------------------------------------------------
@@ -86,7 +86,7 @@ async function main() {
   check('within allocation -> auto-approved + SO created', a.status === 'SO_CREATED' && !!a.salesOrderNo, `status=${a.status} so=${a.salesOrderNo}`);
 
   const deliverA = (await api(`/api/requests/${a.id}/deliver`, {
-    method: 'POST', token: stores.accessToken, body: { recipientEmployeeId: 'EGA1001' },
+    method: 'POST', token: stores.accessToken, body: { recipientEmployeeId: 'EE1001' },
   })).json;
   check('delivery note issued + PROSAFE validated', deliverA.request?.status === 'DELIVERED' && !!deliverA.request?.deliveryNoteNo);
 
@@ -94,13 +94,13 @@ async function main() {
   check('delivery notes consolidated', a.status === 'CONSOLIDATED');
 
   const invA = (await api(`/api/requests/${a.id}/invoice`, { method: 'POST', token: stores.accessToken })).json;
-  check('invoice to EGA posted', invA.request?.status === 'INVOICED' && invA.invoice?.invoiceNo && invA.invoice?.totalAmount > 0,
+  check('invoice to E&E posted', invA.request?.status === 'INVOICED' && invA.invoice?.invoiceNo && invA.invoice?.totalAmount > 0,
     `status=${invA.request?.status} inv=${invA.invoice?.invoiceNo}`);
 
   // ========================================================================
-  // PATH B: exceeds allocation -> EGA approval required
+  // PATH B: exceeds allocation -> E&E approval required
   // ========================================================================
-  console.log('\n  -- Path B: exceeds allocation (needs EGA approval) --');
+  console.log('\n  -- Path B: exceeds allocation (needs E&E approval) --');
   let b = (await api('/api/requests', {
     method: 'POST', token: requester.accessToken,
     body: { department: 'Casthouse', lines: [{ materialId: helmet.id, qty: 5 }] }, // allocated 2 -> exceeds
@@ -112,14 +112,14 @@ async function main() {
   check('requester cannot approve (RBAC)', (await api(`/api/requests/${b.id}/approve`, { method: 'POST', token: requester.accessToken })).status === 403);
 
   b = (await api(`/api/requests/${b.id}/approve`, { method: 'POST', token: approver.accessToken, body: { note: 'Approved — shift expansion' } })).json.request;
-  check('EGA approval -> SO created', b.status === 'SO_CREATED' && !!b.salesOrderNo, `status=${b.status}`);
+  check('E&E approval -> SO created', b.status === 'SO_CREATED' && !!b.salesOrderNo, `status=${b.status}`);
 
   // Reject path on a fresh exceeding request
   let c = (await api('/api/requests', { method: 'POST', token: requester.accessToken, body: { lines: [{ materialId: helmet.id, qty: 9 }] } })).json.request;
   c = (await api(`/api/requests/${c.id}/submit`, { method: 'POST', token: requester.accessToken })).json.request;
   c = (await api(`/api/requests/${c.id}/acknowledge`, { method: 'POST', token: stores.accessToken })).json.request;
   c = (await api(`/api/requests/${c.id}/reject`, { method: 'POST', token: approver.accessToken, body: { reason: 'Excessive qty' } })).json.request;
-  check('EGA rejection works', c.status === 'REJECTED');
+  check('E&E rejection works', c.status === 'REJECTED');
 
   // --- Return flow ---------------------------------------------------------
   const ret = (await api(`/api/requests/${a.id}/return`, {

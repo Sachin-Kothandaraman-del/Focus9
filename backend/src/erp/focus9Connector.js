@@ -135,7 +135,7 @@ export const focus9 = {
 function mapOrderToFocus9(order) {
   return {
     company: config.focus9.companyCode,
-    customer: order.customerCode || 'EGA',
+    customer: order.customerCode || 'E&E',
     transaction_date: new Date().toISOString().slice(0, 10),
     items: order.lines.map((l) => ({
       item_code: l.materialCode,
