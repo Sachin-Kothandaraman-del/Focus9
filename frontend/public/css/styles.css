@@ -180,10 +180,6 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--e
 .auth-logo .big { font-size: 40px; font-weight: 800; letter-spacing: 1px; }
 .auth-logo .small { opacity: .85; letter-spacing: 2px; font-size: 12px; }
 .auth-card { background: #fff; border-radius: 22px; padding: 22px; box-shadow: var(--shadow); }
-.demo-accounts { margin-top: 14px; }
-.demo-accounts .acc { display: flex; justify-content: space-between; align-items: center; padding: 9px 12px; border: 1px solid var(--line); border-radius: 10px; margin-bottom: 8px; cursor: pointer; font-size: 13px; }
-.demo-accounts .acc:active { background: var(--ee-light); }
-
 /* ---- Sign in / up switch ---- */
 .auth-switch { text-align: center; font-size: 13.5px; color: var(--muted); margin-top: 14px; }
 .link { color: var(--ee); font-weight: 700; cursor: pointer; }

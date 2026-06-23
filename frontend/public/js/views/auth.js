@@ -1,14 +1,6 @@
 import { h, clear, toast } from '../ui.js';
 import { api, session } from '../api.js';
 
-const DEMO = [
-  { email: 'requester@eande.ae', role: 'Requester' },
-  { email: 'stores@eande.ae', role: 'Stores' },
-  { email: 'approver@eande.ae', role: 'E&E Approver' },
-  { email: 'admin@eande.ae', role: 'Administrator' },
-];
-const DEMO_PW = 'Passw0rd!23';
-
 const ROLES = [
   { value: 'requester', label: 'Requester — raise material requests' },
   { value: 'storekeeper', label: 'Stores — fulfil & deliver' },
@@ -33,11 +25,11 @@ export function renderAuth(root, onAuthed) {
   showLogin();
 
   // ---------------------------------------------------------------- SIGN IN
-  function showLogin(prefillEmail = 'requester@eande.ae', banner = null) {
+  function showLogin(prefillEmail = '', banner = null) {
     clear(wrap);
     const errBox = h('div', { class: 'error-box', style: 'display:none' });
-    const email = h('input', { type: 'email', value: prefillEmail, autocomplete: 'username', placeholder: 'name@eande.ae' });
-    const pw = h('input', { type: 'password', value: prefillEmail === 'requester@eande.ae' ? DEMO_PW : '', autocomplete: 'current-password', placeholder: '••••••••' });
+    const email = h('input', { type: 'email', value: prefillEmail, autocomplete: 'username', placeholder: 'you@company.com' });
+    const pw = h('input', { type: 'password', autocomplete: 'current-password', placeholder: '••••••••' });
     const btn = h('button', { class: 'btn', onclick: doLogin }, 'Sign in');
 
     async function doLogin() {
@@ -67,15 +59,6 @@ export function renderAuth(root, onAuthed) {
           'New to E&E Distribution? ',
           h('a', { class: 'link', onclick: () => showSignup() }, 'Create an account'),
         ]),
-        h('div', { class: 'demo-accounts' }, [
-          h('div', { class: 'section-title', style: 'margin-left:0' }, 'Demo accounts (tap to fill)'),
-          ...DEMO.map((d) =>
-            h('div', { class: 'acc', onclick: () => { email.value = d.email; pw.value = DEMO_PW; } }, [
-              h('span', { class: 'mono' }, d.email),
-              h('span', { class: 'chip cat' }, d.role),
-            ])
-          ),
-        ]),
       ])
     );
   }
@@ -85,7 +68,7 @@ export function renderAuth(root, onAuthed) {
     clear(wrap);
     const errBox = h('div', { class: 'error-box', style: 'display:none' });
     const name = h('input', { type: 'text', autocomplete: 'name', placeholder: 'Your full name' });
-    const email = h('input', { type: 'email', autocomplete: 'email', placeholder: 'name@eande.ae' });
+    const email = h('input', { type: 'email', autocomplete: 'email', placeholder: 'you@company.com' });
     const role = h('select', {}, ROLES.map((r) => h('option', { value: r.value }, r.label)));
     const pw = h('input', { type: 'password', autocomplete: 'new-password', placeholder: 'Create a password' });
     const pw2 = h('input', { type: 'password', autocomplete: 'new-password', placeholder: 'Confirm password' });
