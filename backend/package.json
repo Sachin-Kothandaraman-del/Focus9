@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
-    "seed": "node src/db/seed.js",
+    "db:reset": "node src/db/reset.js",
     "test:flow": "node src/test/e2e-flow.js"
   },
   "keywords": [

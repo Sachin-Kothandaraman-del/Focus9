@@ -22,6 +22,13 @@ export function getSql() {
 
 export async function initPg() {
   const s = getSql();
+  // `if not exists` still races when several serverless cold-starts run this at
+  // once (Postgres can raise duplicate_table / duplicate_object). Those are safe
+  // to ignore — the object ends up created exactly once either way.
+  const ignoreRace = (err) => {
+    if (['42P07', '42P06', '42710', '23505'].includes(err.code)) return;
+    throw err;
+  };
   await s`
     create table if not exists kv (
       collection text not null,
@@ -29,8 +36,8 @@ export async function initPg() {
       data       jsonb not null,
       created_at timestamptz not null default now(),
       primary key (collection, id)
-    )`;
-  await s`create index if not exists kv_collection_idx on kv (collection)`;
+    )`.catch(ignoreRace);
+  await s`create index if not exists kv_collection_idx on kv (collection)`.catch(ignoreRace);
 }
 
 export class PgRepository {
@@ -49,6 +56,7 @@ export class PgRepository {
     return (await this.all()).filter(predicate);
   }
   async getById(id) {
+    if (id === undefined || id === null) return undefined;
     const s = getSql();
     const rows = await s`select data from kv where collection=${this.name} and id=${id} limit 1`;
     return rows[0]?.data;

@@ -23,7 +23,7 @@ function sleep(ms) {
  * @param {() => Promise<any>} fn  the actual connector call
  */
 export async function runWithQueue(type, payload, fn) {
-  const entry = db.erpQueue.insert({
+  const entry = await db.erpQueue.insert({
     id: crypto.randomUUID(),
     type,
     payload,
@@ -40,12 +40,12 @@ export async function runWithQueue(type, payload, fn) {
     attempt += 1;
     try {
       const result = await fn();
-      db.erpQueue.update(entry.id, { status: 'done', attempts: attempt, result });
+      await db.erpQueue.update(entry.id, { status: 'done', attempts: attempt, result });
       return result;
     } catch (err) {
       lastErr = err;
       const transient = err.transient !== false; // mock errors treated as transient
-      db.erpQueue.update(entry.id, {
+      await db.erpQueue.update(entry.id, {
         status: 'retrying',
         attempts: attempt,
         lastError: err.message,
@@ -55,7 +55,7 @@ export async function runWithQueue(type, payload, fn) {
     }
   }
 
-  db.erpQueue.update(entry.id, { status: 'failed', lastError: lastErr?.message });
+  await db.erpQueue.update(entry.id, { status: 'failed', lastError: lastErr?.message });
   const e = new Error(`ERP operation '${type}' failed after ${attempt} attempts: ${lastErr?.message}`);
   e.status = 502;
   e.code = 'erp_unavailable';
