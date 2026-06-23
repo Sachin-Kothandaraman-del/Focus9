@@ -8,8 +8,6 @@ import { fileURLToPath } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = path.join(__dirname, '..', 'data');
 
-if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-
 const cache = new Map();
 
 function fileFor(name) {
@@ -30,6 +28,7 @@ function load(name) {
   return rows;
 }
 function persist(name) {
+  if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
   const file = fileFor(name);
   const tmp = `${file}.tmp`;
   fs.writeFileSync(tmp, JSON.stringify(cache.get(name) ?? [], null, 2));

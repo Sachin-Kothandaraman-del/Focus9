@@ -4,7 +4,6 @@
 //   DATA_BACKEND=file      -> local JSON files (default for local dev)
 //   DATA_BACKEND=postgres  -> Supabase Postgres (default when DATABASE_URL set)
 import { config } from '../config.js';
-import { FileRepository, initFile } from './fileStore.js';
 
 const COLLECTIONS = [
   'users', 'otps', 'refreshTokens', 'materials', 'requests',
@@ -13,15 +12,17 @@ const COLLECTIONS = [
 
 const usePostgres = config.db.backend === 'postgres';
 
+// Import ONLY the backend in use. fileStore must never be loaded on Vercel
+// (its filesystem is read-only) when running in postgres mode.
 let Repo, init;
 if (usePostgres) {
-  // Lazy import so the `postgres` package isn't required for file-mode dev.
   const pg = await import('./pgStore.js');
   Repo = pg.PgRepository;
   init = pg.initPg;
 } else {
-  Repo = FileRepository;
-  init = initFile;
+  const file = await import('./fileStore.js');
+  Repo = file.FileRepository;
+  init = file.initFile;
 }
 
 export const db = Object.fromEntries(COLLECTIONS.map((name) => [name, new Repo(name)]));
