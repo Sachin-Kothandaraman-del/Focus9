@@ -46,8 +46,19 @@ app.use(
 app.use(
   cors({
     origin: (origin, cb) => {
-      if (!origin || config.cors.origins.includes(origin)) return cb(null, true);
-      cb(new Error('Not allowed by CORS'));
+      // Same-origin (no Origin header), explicitly configured origins, and any
+      // Vercel deployment (production + preview URLs) are allowed.
+      if (!origin) return cb(null, true);
+      try {
+        const host = new URL(origin).hostname;
+        if (config.cors.origins.includes(origin) || /(^|\.)vercel\.app$/.test(host)) {
+          return cb(null, true);
+        }
+      } catch {
+        /* malformed origin -> fall through to deny */
+      }
+      // Deny without throwing: the browser blocks it, but we never 500.
+      cb(null, false);
     },
     credentials: true,
   })
