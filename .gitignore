@@ -1,0 +1,8 @@
+node_modules/
+backend/.env
+backend/src/data/*.json
+backend/certs/
+.vercel/
+npm-debug.log*
+.DS_Store
+Thumbs.db

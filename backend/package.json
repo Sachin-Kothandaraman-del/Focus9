@@ -1,0 +1,36 @@
+{
+  "name": "ega-focus9-distribution-backend",
+  "version": "1.0.0",
+  "description": "Middleware/backend for the EGA end-to-end distribution mobile app, integrating with Focus 9 ERP. Implements the B2C 3-layer architecture, security best practices, and the EGA distribution workflow.",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "seed": "node src/db/seed.js",
+    "test:flow": "node src/test/e2e-flow.js"
+  },
+  "keywords": [
+    "focus9",
+    "erp",
+    "ega",
+    "distribution",
+    "middleware",
+    "b2c"
+  ],
+  "author": "Sachin Kothandaraman",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-async-errors": "^3.1.1",
+    "express-rate-limit": "^7.4.0",
+    "express-validator": "^7.2.0",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "postgres": "^3.4.4",
+    "uuid": "^9.0.1"
+  }
+}

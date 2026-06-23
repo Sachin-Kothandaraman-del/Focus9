@@ -1,0 +1,13 @@
+{
+  "name": "EGA Distribution · Focus 9",
+  "short_name": "EGA Dist",
+  "description": "EGA end-to-end material distribution app integrated with Focus 9 ERP.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b6b53",
+  "theme_color": "#0b6b53",
+  "icons": [
+    { "src": "/icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
