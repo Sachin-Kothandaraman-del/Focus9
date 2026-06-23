@@ -69,6 +69,14 @@ export class FileRepository {
     cache.set(this.name, rows);
     persist(this.name);
   }
+  async delete(id) {
+    const rows = load(this.name);
+    const idx = rows.findIndex((r) => r.id === id);
+    if (idx === -1) return false;
+    rows.splice(idx, 1);
+    persist(this.name);
+    return true;
+  }
   async count() {
     return load(this.name).length;
   }

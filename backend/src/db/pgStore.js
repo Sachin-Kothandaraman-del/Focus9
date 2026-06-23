@@ -80,6 +80,12 @@ export class PgRepository {
     await s`delete from kv where collection=${this.name}`;
     for (const r of rows) await this.insert(r);
   }
+  async delete(id) {
+    if (id === undefined || id === null) return false;
+    const s = getSql();
+    await s`delete from kv where collection=${this.name} and id=${id}`;
+    return true;
+  }
   async count() {
     const s = getSql();
     const rows = await s`select count(*)::int as c from kv where collection=${this.name}`;

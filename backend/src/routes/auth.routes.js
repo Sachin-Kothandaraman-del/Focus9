@@ -137,4 +137,21 @@ router.get('/me', authenticate, async (req, res) => {
   res.json({ user: publicUser(user) });
 });
 
+// --- Delete own account -----------------------------------------------------
+// Removes the user and their auth artifacts (refresh tokens + OTPs). Business
+// records they raised (requests, deliveries, invoices) are intentionally kept
+// for audit/ERP integrity.
+router.delete('/account', authenticate, async (req, res) => {
+  const userId = req.user.id;
+  const user = await db.users.getById(userId);
+  if (!user) return res.status(404).json({ error: 'not_found', message: 'Account not found.' });
+
+  for (const t of await db.refreshTokens.filter((t) => t.userId === userId)) await db.refreshTokens.delete(t.id);
+  for (const o of await db.otps.filter((o) => o.userId === userId)) await db.otps.delete(o.id);
+  await db.users.delete(userId);
+
+  await audit(publicUser(user), 'auth.account.delete', userId, { email: user.email });
+  res.json({ ok: true, message: 'Your account has been deleted.' });
+});
+
 export default router;

@@ -96,6 +96,8 @@ export const api = {
   verifyOtp: (userId, code) => request('/auth/verify-otp', { method: 'POST', body: { userId, code }, auth: false }),
   register: (data) => request('/auth/register', { method: 'POST', body: data, auth: false }),
   me: () => request('/auth/me'),
+  logout: (refreshToken) => request('/auth/logout', { method: 'POST', body: { refreshToken } }),
+  deleteAccount: () => request('/auth/account', { method: 'DELETE' }),
 
   // catalogue & requests
   materials: () => request('/materials'),
